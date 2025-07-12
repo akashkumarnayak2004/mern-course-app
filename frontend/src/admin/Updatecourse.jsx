@@ -53,7 +53,7 @@ const UpdateCourse = () => {
     if (form.image) formData.append("image", form.image);
 
     try {
-      await axios.put(`http://localhost:4001/api/v1/course/update/${courseId}`, formData, {
+      await axios.put(`${BACKEND_URL}/course/update/${courseId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("admin"))?.token || ""}`,
