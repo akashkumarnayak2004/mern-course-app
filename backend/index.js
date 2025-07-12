@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser';
 const app =express();
 dotenv.config();
 const corsOptions = {
-    origin: 'http://localhost:5173', 
+    origin: 'https://mern-course-app-frontend.onrender.com', 
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
 };
