@@ -40,7 +40,7 @@ DB();
 app.use('/api/v1/course', courseRoutes);
 app.use("/api/v1/user",userRoutes);
  app.use("/api/v1/admin",adminRoutes);
-PORT = process.env.PORT ||4002;
+
 app.listen(PORT, ()=>{
     console.log(`Server is running on ${PORT}`);
 })
