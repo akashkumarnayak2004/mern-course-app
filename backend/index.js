@@ -13,13 +13,12 @@ import cookieParser from 'cookie-parser';
 const app =express();
 dotenv.config();
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // Replace with your frontend URL
-  optionsSuccessStatus: 200,       // For legacy browser support
-  credentials: true,               // Allow cookies to be sent
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  allowedHeaders: "Content-Type, Authorization"
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+    credentials: true,
 };
 
+app.use(cors(corsOptions));
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -41,7 +40,7 @@ DB();
 app.use('/api/v1/course', courseRoutes);
 app.use("/api/v1/user",userRoutes);
  app.use("/api/v1/admin",adminRoutes);
-
+PORT = process.env.PORT ||4002;
 app.listen(PORT, ()=>{
     console.log(`Server is running on ${PORT}`);
 })
