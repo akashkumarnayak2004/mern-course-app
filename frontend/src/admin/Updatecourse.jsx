@@ -63,7 +63,7 @@ const UpdateCourse = () => {
       toast.success("Course updated!");
       navigate("/admin/ourcourses");
     } catch (err) {
-      console.error(err);
+      console.log(err);
       toast.error("Update failed");
     }
   };
