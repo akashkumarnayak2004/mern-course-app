@@ -63,7 +63,7 @@ const Login = () => {
             signup
           </button>
           <button
-            onClick={() => navigate('/courses')}
+            onClick={() => navigate('/signup')}
             className="px-4 py-2 text-sm font-medium text-blue-500 bg-white rounded hover:bg-gray-100 transition"
           >
             Join Now
