@@ -8,6 +8,7 @@ const Purchases = () => {
   const [purchase, setPurchases] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -64,15 +65,43 @@ const Purchases = () => {
       : 'text-gray-700 hover:bg-gray-200';
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col sm:flex-row min-h-screen">
+      {/* Mobile Header */}
+      <div className="sm:hidden flex justify-between items-center p-4 bg-gray-100 shadow-md">
+        <h2 className="text-xl font-bold">Dashboard</h2>
+        <button
+          className="text-sm px-3 py-2 bg-gray-200 rounded"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? 'Close' : 'Menu'}
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-100 p-5 shadow-md">
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+      <aside
+        className={`${
+          isSidebarOpen ? 'block' : 'hidden'
+        } sm:block w-full sm:w-64 bg-gray-100 p-5 shadow-md transition-all duration-300 z-10`}
+      >
         <nav className="flex flex-col gap-2">
-          <button onClick={() => navigate('/')} className={`px-4 py-2 rounded text-left ${activeClass('/')}`}>Home</button>
-          <button onClick={() => navigate('/courses')} className={`px-4 py-2 rounded text-left ${activeClass('/courses')}`}>Courses</button>
-          <button onClick={() => navigate('/purchases')} className={`px-4 py-2 rounded text-left ${activeClass('/purchases')}`}>Purchases</button>
-          {/* <button onClick={() => navigate('/settings')} className={`px-4 py-2 rounded text-left ${activeClass('/settings')}`}>Settings</button> */}
+          <button
+            onClick={() => navigate('/')}
+            className={`px-4 py-2 rounded text-left ${activeClass('/')}`}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => navigate('/courses')}
+            className={`px-4 py-2 rounded text-left ${activeClass('/courses')}`}
+          >
+            Courses
+          </button>
+          <button
+            onClick={() => navigate('/purchases')}
+            className={`px-4 py-2 rounded text-left ${activeClass('/purchases')}`}
+          >
+            Purchases
+          </button>
           <button
             onClick={handleLogout}
             className="px-4 py-2 rounded bg-white text-gray hover:bg-red-600 mt-4 text-left"
