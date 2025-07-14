@@ -5,15 +5,16 @@ import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("admin"); // or sessionStorage, based on usage
-    navigate("/"); // go to home page after logout
+    localStorage.removeItem("admin");
+    navigate("/");
   };
 
   const handleHomeClick = () => {
-    navigate("/"); // go to home page
+    navigate("/");
   };
 
   const renderContent = () => {
@@ -37,12 +38,33 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="w-64 bg-gray-900 text-white p-5 space-y-4">
-        <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
+    <div className="flex flex-col md:flex-row h-screen">
+      {/* Top Navbar for mobile */}
+      <div className="md:hidden bg-gray-900 text-white flex justify-between items-center px-4 py-3 shadow">
+        <h2 className="text-xl font-bold">Admin Panel</h2>
+        <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {menuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
 
-        {/* Home -> navigate to user home page */}
+      {/* Sidebar */}
+      <div
+        className={`${
+          menuOpen ? "block" : "hidden"
+        } md:block w-full md:w-64 bg-gray-900 text-white p-5 space-y-4`}
+      >
         <button
           onClick={handleHomeClick}
           className="block w-full text-left p-2 rounded hover:bg-gray-700"
@@ -50,9 +72,11 @@ const AdminDashboard = () => {
           Home Page
         </button>
 
-        {/* Dashboard Home */}
         <button
-          onClick={() => setActiveTab("dashboard")}
+          onClick={() => {
+            setActiveTab("dashboard");
+            setMenuOpen(false);
+          }}
           className={`block w-full text-left p-2 rounded hover:bg-gray-700 ${
             activeTab === "dashboard" ? "bg-gray-700" : ""
           }`}
@@ -60,9 +84,11 @@ const AdminDashboard = () => {
           Dashboard
         </button>
 
-        {/* Create Course */}
         <button
-          onClick={() => setActiveTab("create")}
+          onClick={() => {
+            setActiveTab("create");
+            setMenuOpen(false);
+          }}
           className={`block w-full text-left p-2 rounded hover:bg-gray-700 ${
             activeTab === "create" ? "bg-gray-700" : ""
           }`}
@@ -70,9 +96,11 @@ const AdminDashboard = () => {
           Create Course
         </button>
 
-        {/* All Courses */}
         <button
-          onClick={() => setActiveTab("courses")}
+          onClick={() => {
+            setActiveTab("courses");
+            setMenuOpen(false);
+          }}
           className={`block w-full text-left p-2 rounded hover:bg-gray-700 ${
             activeTab === "courses" ? "bg-gray-700" : ""
           }`}
@@ -80,7 +108,6 @@ const AdminDashboard = () => {
           All Courses
         </button>
 
-        {/* Logout */}
         <button
           onClick={handleLogout}
           className="block w-full text-left p-2 mt-8 bg-red-600 hover:bg-red-700 rounded"
@@ -90,7 +117,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 overflow-y-auto">{renderContent()}</div>
+      <div className="flex-1 p-6 overflow-y-auto bg-white">{renderContent()}</div>
     </div>
   );
 };
