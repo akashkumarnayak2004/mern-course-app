@@ -1,10 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom'; // Add this at the top
 import { BACKEND_URL } from '../../utils/util';
-
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -12,6 +10,8 @@ const Courses = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,21 +29,17 @@ const Courses = () => {
         setCourses(response.data.courses);
         setFilteredCourses(response.data.courses);
       } catch (error) {
-        console.error('Error fetching courses:', error);
         toast.error('Failed to load courses');
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchCourses();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await axios.get(`${BACKEND_URL}/user/logout`, {
-        withCredentials: true,
-      });
+      await axios.get(`${BACKEND_URL}/user/logout`, { withCredentials: true });
       toast.success('Logout successful!');
       setIsLoggedin(false);
       localStorage.removeItem('user');
@@ -62,33 +58,47 @@ const Courses = () => {
     setFilteredCourses(filtered);
   };
 
-  const handleBuy = (courseId) => {
-    if (!isLoggedin) {
-      toast.error('Please login to buy a course.');
-      return;
-    }
-    toast.success('Redirecting to payment...');
-    console.log('Buy course:', courseId);
-  };
-
   const activeClass = (path) =>
     location.pathname === path
       ? 'bg-blue-600 text-white'
       : 'text-gray-700 hover:bg-gray-200';
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-100 p-5 shadow-md">
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-        <nav className="flex flex-col gap-2">
-          <button onClick={() => navigate('/')} className={`px-4 py-2 rounded text-left ${activeClass('/')}`}>Home</button>
-          <button onClick={() => navigate('/courses')} className={`px-4 py-2 rounded text-left ${activeClass('/courses')}`}>Courses</button>
-          <button onClick={() => navigate('/purchases')} className={`px-4 py-2 rounded text-left ${activeClass('/purchases')}`}>Purchases</button>
-          {/* <button onClick={() => navigate('/settings')} className={`px-4 py-2 rounded text-left ${activeClass('/settings')}`}>Settings</button> */}
+    <div className="flex flex-col md:flex-row min-h-screen">
+      {/* Mobile Top Bar */}
+      <div className="md:hidden bg-gray-100 px-4 py-3 flex justify-between items-center shadow">
+        <h2 className="text-xl font-bold">Dashboard</h2>
+        <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
+          {/* Hamburger Icon */}
+          <svg
+            className="w-6 h-6 text-gray-800"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {menuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Sidebar or Top Nav */}
+      <aside
+        className={`${
+          menuOpen ? 'block' : 'hidden'
+        } md:block w-full md:w-64 bg-gray-100 p-4 shadow md:min-h-screen`}
+      >
+        <nav className="flex flex-col md:gap-2 gap-4 md:items-start items-center mt-2 md:mt-0">
+          <button onClick={() => navigate('/')} className={`px-4 py-2 rounded ${activeClass('/')}`}>Home</button>
+          <button onClick={() => navigate('/courses')} className={`px-4 py-2 rounded ${activeClass('/courses')}`}>Courses</button>
+          <button onClick={() => navigate('/purchases')} className={`px-4 py-2 rounded ${activeClass('/purchases')}`}>Purchases</button>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 rounded bg-white text-gray hover:bg-red-600 mt-4 text-left"
+            className="px-4 py-2 rounded bg-white text-gray hover:bg-red-600"
           >
             Logout
           </button>
@@ -97,8 +107,8 @@ const Courses = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-6 bg-white overflow-y-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-          <h1 className="text-3xl font-bold mb-4 sm:mb-0">Courses</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+          <h1 className="text-3xl font-bold">Courses</h1>
           <input
             type="text"
             placeholder="Search courses..."
@@ -128,22 +138,22 @@ const Courses = () => {
                   <h2 className="text-lg font-semibold mb-1">{course.title}</h2>
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">{course.description}</p>
                   <div className="text-gray-800 font-medium mb-4">₹{course.price}</div>
-                  {isLoggedin ? (
-  <Link
-    to={`/buy/${course._id}`}
-    className="mt-auto py-2 text-center rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-  >
-    Buy Now
-  </Link>
-) : (
-  <button
-    disabled
-    className="mt-auto py-2 rounded-md bg-gray-400 text-white font-semibold cursor-not-allowed"
-  >
-    Login to Buy
-  </button>
-)}
 
+                  {isLoggedin ? (
+                    <Link
+                      to={`/buy/${course._id}`}
+                      className="mt-auto py-2 text-center rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
+                    >
+                      Buy Now
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className="mt-auto py-2 rounded-md bg-gray-400 text-white font-semibold cursor-not-allowed"
+                    >
+                      Login to Buy
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
